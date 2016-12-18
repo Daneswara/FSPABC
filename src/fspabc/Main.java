@@ -28,6 +28,8 @@ public class Main extends javax.swing.JFrame {
     private int nse;
     private int project;
     private int[][] beeColony;
+    int[] task = {0, 0, 0, 0};
+    int data[][];
 
     /**
      * Creates new form Main
@@ -205,6 +207,7 @@ public class Main extends javax.swing.JFrame {
         // TODO add your handling code here:
         colonySize = Integer.parseInt(_colonysize.getText());
         beeColony = iBeeColony();
+        ABC(beeColony);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -243,7 +246,7 @@ public class Main extends javax.swing.JFrame {
     }
 
     public int[][] iBeeColony() {
-        int[][] initbee = new int[colonySize][sizeProblem];
+        int[][] initbee = new int[colonySize][sizeProblem + 2];
         System.out.println("[Employeed bee] Inisialisasi bee :");
         for (int i = 0; i < colonySize; i++) {
             ArrayList<Integer> random = new ArrayList<Integer>();
@@ -253,18 +256,68 @@ public class Main extends javax.swing.JFrame {
             Collections.shuffle(random);
             for (int j = 0; j < sizeProblem; j++) {
                 initbee[i][j] = (int) random.get(j);
-                System.out.print(initbee[i][j]);
-                System.out.print(" ");
+
             }
-            hitungMakeSpan(initbee[i]);
+            initbee[i][sizeProblem] = hitungMakeSpan(initbee[i]);
         }
+        tampilkanBeeMakespan(initbee);
         return initbee;
     }
 
-    int[] task = {0, 0, 0, 0};
+    public void ABC(int[][] beeColony) {
+        int temp = 0;
+        int tmp[] = new int[2];
+        // SO
+        for (int i = 0; i < colonySize; i++) {
+            ArrayList<Integer> random = new ArrayList<Integer>();
+            for (int r = 1; r <= sizeProblem; r++) {
+                random.add(new Integer(r));
+            }
+            Collections.shuffle(random);
+            for (int j = 0; j < 2; j++) {
+                tmp[j] = ((int) random.get(j)) - 1;
+            }
+            System.out.println("SO " + (tmp[0] + 1) + " " + (tmp[1] + 1));
+            for (int j = 0; j < sizeProblem; j++) {
+                System.out.print(beeColony[i][j] + " ");
+            }
+            System.out.println("");
+            temp = beeColony[i][tmp[0]];
+            beeColony[i][tmp[0]] = beeColony[i][tmp[1]];
+            beeColony[i][tmp[1]] = temp;
 
-    public void hitungMakeSpan(int[] urutan) {
-        for (int i = 0; i < urutan.length; i++) {
+            for (int j = 0; j < sizeProblem; j++) {
+                System.out.print(beeColony[i][j] + " ");
+            }
+            beeColony[i][sizeProblem] = hitungMakeSpan(beeColony[i]);
+            beeColony[i][sizeProblem + 1]++;
+            System.out.println("");
+        }
+        System.out.println("Hasil SO");
+        tampilkanBeeDenganTrial(beeColony);
+    }
+
+    public void tampilkanBeeDenganTrial(int[][] bee) {
+        for (int i = 0; i < bee.length; i++) {
+            for (int j = 0; j < bee[0].length; j++) {
+                System.out.print(bee[i][j] + " ");
+            }
+            System.out.println("");
+        }
+    }
+
+    public void tampilkanBeeMakespan(int[][] bee) {
+        for (int i = 0; i < bee.length; i++) {
+            for (int j = 0; j < bee[0].length - 1; j++) {
+                System.out.print(bee[i][j] + " ");
+            }
+            System.out.println("");
+        }
+    }
+
+    public int hitungMakeSpan(int[] urutan) {
+        int hasil;
+        for (int i = 0; i < urutan.length - 2; i++) {
             for (int j = 1; j < data[0].length; j++) {
                 if (j - 1 == 0) {
                     task[j - 1] += data[urutan[i] - 1][j - 1];
@@ -279,14 +332,13 @@ public class Main extends javax.swing.JFrame {
             }
 
         }
-        System.out.println("makespan : " + task[3]);
+        hasil = task[3];
         task[0] = 0;
         task[1] = 0;
         task[2] = 0;
         task[3] = 0;
+        return hasil;
     }
-
-    int data[][];
 
     private void muatData(String lokasi) {
         File excelFile = new File(lokasi);
