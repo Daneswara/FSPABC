@@ -6,6 +6,8 @@
 package fspabc;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -19,6 +21,13 @@ import jxl.Workbook;
 public class Main extends javax.swing.JFrame {
 
     private JFileChooser chooser = new JFileChooser();
+    private int colonySize;
+    private int maksIterasi;
+    private int sizeProblem;
+    private int limit;
+    private int nse;
+    private int project;
+    private int[][] beeColony;
 
     /**
      * Creates new form Main
@@ -36,10 +45,10 @@ public class Main extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        _colonysize = new javax.swing.JTextField();
+        _maksiterasi = new javax.swing.JTextField();
+        _limit = new javax.swing.JTextField();
+        _nse = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -51,6 +60,7 @@ public class Main extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -88,6 +98,13 @@ public class Main extends javax.swing.JFrame {
         jLabel7.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         jLabel7.setText("________________________________________________________________________");
 
+        jButton2.setText("Proses");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -122,13 +139,14 @@ public class Main extends javax.swing.JFrame {
                                                 .addComponent(jLabel2))
                                             .addGap(31, 31, 31)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(jTextField2)
-                                                .addComponent(jTextField3)
-                                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(_maksiterasi)
+                                                .addComponent(_limit)
+                                                .addComponent(_nse, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel1)
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))))))))
+                                            .addComponent(_colonysize, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))))
                 .addContainerGap(23, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -150,21 +168,23 @@ public class Main extends javax.swing.JFrame {
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(_colonysize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel1))
                                 .addGap(16, 16, 16)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(_maksiterasi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel2))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(_limit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3))
                                 .addGap(18, 18, 18)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))))))
-                .addContainerGap(88, Short.MAX_VALUE))
+                                    .addComponent(_nse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel4))
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         pack();
@@ -180,6 +200,12 @@ public class Main extends javax.swing.JFrame {
             muatData(f.getPath());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        colonySize = Integer.parseInt(_colonysize.getText());
+        beeColony = iBeeColony();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,7 +242,51 @@ public class Main extends javax.swing.JFrame {
         });
     }
 
-    double data[][];
+    public int[][] iBeeColony() {
+        int[][] initbee = new int[colonySize][sizeProblem];
+        System.out.println("[Employeed bee] Inisialisasi bee :");
+        for (int i = 0; i < colonySize; i++) {
+            ArrayList<Integer> random = new ArrayList<Integer>();
+            for (int r = 1; r <= sizeProblem; r++) {
+                random.add(new Integer(r));
+            }
+            Collections.shuffle(random);
+            for (int j = 0; j < sizeProblem; j++) {
+                initbee[i][j] = (int) random.get(j);
+                System.out.print(initbee[i][j]);
+                System.out.print(" ");
+            }
+            hitungMakeSpan(initbee[i]);
+        }
+        return initbee;
+    }
+
+    int[] task = {0, 0, 0, 0};
+
+    public void hitungMakeSpan(int[] urutan) {
+        for (int i = 0; i < urutan.length; i++) {
+            for (int j = 1; j < data[0].length; j++) {
+                if (j - 1 == 0) {
+                    task[j - 1] += data[urutan[i] - 1][j - 1];
+                } else {
+                    if (task[j - 1] > task[j - 2]) {
+                        task[j - 1] += data[urutan[i] - 1][j - 1];
+                    } else {
+                        task[j - 1] = data[urutan[i] - 1][j - 1];
+                        task[j - 1] += task[j - 2];
+                    }
+                }
+            }
+
+        }
+        System.out.println("makespan : " + task[3]);
+        task[0] = 0;
+        task[1] = 0;
+        task[2] = 0;
+        task[3] = 0;
+    }
+
+    int data[][];
 
     private void muatData(String lokasi) {
         File excelFile = new File(lokasi);
@@ -230,11 +300,12 @@ public class Main extends javax.swing.JFrame {
                 DefaultTableModel model = new DefaultTableModel(null, header);
                 model.setColumnCount(sheet.getColumns());
                 model.setRowCount(sheet.getRows());
-                data = new double[sheet.getRows()][sheet.getColumns()];
+                data = new int[sheet.getRows()][sheet.getColumns()];
+                sizeProblem = sheet.getRows();
                 for (int row = 0; row < sheet.getRows(); row++) {
                     for (int column = 0; column < sheet.getColumns(); column++) {
                         String content = sheet.getCell(column, row).getContents();
-                        data[row][column] = Double.parseDouble(sheet.getCell(column, row).getContents());
+                        data[row][column] = Integer.parseInt(sheet.getCell(column, row).getContents());
                         model.setValueAt(content, row, column);
                     }
                 }
@@ -249,7 +320,12 @@ public class Main extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextField _colonysize;
+    private javax.swing.JTextField _limit;
+    private javax.swing.JTextField _maksiterasi;
+    private javax.swing.JTextField _nse;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -258,10 +334,6 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lokasi;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
