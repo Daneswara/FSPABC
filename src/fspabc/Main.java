@@ -7,6 +7,7 @@ package fspabc;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -206,6 +207,7 @@ public class Main extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         colonySize = Integer.parseInt(_colonysize.getText());
+        nse = Integer.parseInt(_nse.getText()) * 2;
         beeColony = iBeeColony();
         ABC(beeColony);
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -268,6 +270,7 @@ public class Main extends javax.swing.JFrame {
         int temp = 0;
         int tmp[] = new int[2];
         // SO
+        System.out.println("================Tahap SO================");
         for (int i = 0; i < colonySize; i++) {
             ArrayList<Integer> random = new ArrayList<Integer>();
             for (int r = 1; r <= sizeProblem; r++) {
@@ -294,6 +297,56 @@ public class Main extends javax.swing.JFrame {
             System.out.println("");
         }
         System.out.println("Hasil SO");
+        tampilkanBeeDenganTrial(beeColony);
+
+        // SS
+        System.out.println("");
+        System.out.println("================Tahap SS================");
+        int[] terbaik = new int[sizeProblem + 2];
+        int makespan = 0;
+        for (int i = 0; i < colonySize; i++) {
+            terbaik = Arrays.copyOf(beeColony[i], beeColony[i].length);
+            System.out.print("x" + (i + 1) + "\t= ");
+            for (int k = 0; k < sizeProblem + 2; k++) {
+                System.out.print(terbaik[k] + " ");
+            }
+            System.out.println("");
+            for (int j = 0; j < nse; j++) {
+                ArrayList<Integer> random = new ArrayList<Integer>();
+                for (int r = 1; r <= sizeProblem; r++) {
+                    random.add(new Integer(r));
+                }
+                Collections.shuffle(random);
+                for (int k = 0; k < 2; k++) {
+                    tmp[k] = ((int) random.get(k)) - 1;
+                }
+                System.out.print("SO " + (tmp[0] + 1) + " " + (tmp[1] + 1) + "\t= ");
+                temp = beeColony[i][tmp[0]];
+                beeColony[i][tmp[0]] = beeColony[i][tmp[1]];
+                beeColony[i][tmp[1]] = temp;
+
+                beeColony[i][sizeProblem] = hitungMakeSpan(beeColony[i]);
+
+                if (beeColony[i][sizeProblem] < terbaik[sizeProblem]) {
+                    beeColony[i][sizeProblem + 1] = 0;
+                    terbaik = Arrays.copyOf(beeColony[i], beeColony[i].length);
+                } else {
+                    beeColony[i][sizeProblem + 1]++;
+                }
+                for (int k = 0; k < sizeProblem + 2; k++) {
+                    System.out.print(beeColony[i][k] + " ");
+                }
+                System.out.println("");
+            }
+            terbaik[sizeProblem + 1] = beeColony[i][sizeProblem + 1];
+            System.out.print("Terbaik\t= ");
+            for (int k = 0; k < sizeProblem + 2; k++) {
+                System.out.print(terbaik[k] + " ");
+            }
+            System.out.println("\n");
+            beeColony[i] = Arrays.copyOf(terbaik, terbaik.length);
+        }
+        System.out.println("Hasil SS");
         tampilkanBeeDenganTrial(beeColony);
     }
 
