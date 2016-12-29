@@ -51,11 +51,9 @@ public class Main extends javax.swing.JFrame {
         _colonysize = new javax.swing.JTextField();
         _maksiterasi = new javax.swing.JTextField();
         _limit = new javax.swing.JTextField();
-        _nse = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
@@ -72,8 +70,6 @@ public class Main extends javax.swing.JFrame {
         jLabel2.setText("Maks Iterasi");
 
         jLabel3.setText("Limit");
-
-        jLabel4.setText("NSE");
 
         table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -119,7 +115,6 @@ public class Main extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel5)
                                 .addGap(40, 40, 40))))
                     .addGroup(layout.createSequentialGroup()
@@ -137,17 +132,15 @@ public class Main extends javax.swing.JFrame {
                                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                         .addGroup(layout.createSequentialGroup()
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addComponent(jLabel4)
                                                 .addComponent(jLabel3)
                                                 .addComponent(jLabel2))
                                             .addGap(31, 31, 31)
                                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                .addComponent(_maksiterasi)
-                                                .addComponent(_limit)
-                                                .addComponent(_nse, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(_maksiterasi, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                                                .addComponent(_limit)))
                                         .addGroup(layout.createSequentialGroup()
                                             .addComponent(jLabel1)
-                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                             .addComponent(_colonysize, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))))
                 .addContainerGap(23, Short.MAX_VALUE))
@@ -181,11 +174,7 @@ public class Main extends javax.swing.JFrame {
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                     .addComponent(_limit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel3))
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(_nse, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4))
-                                .addGap(18, 18, 18)
+                                .addGap(50, 50, 50)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addContainerGap(59, Short.MAX_VALUE))
         );
@@ -207,9 +196,16 @@ public class Main extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         colonySize = Integer.parseInt(_colonysize.getText());
-        nse = Integer.parseInt(_nse.getText()) * 2;
+        nse = colonySize * 2;
         beeColony = iBeeColony();
-        ABC(beeColony);
+        maksIterasi = Integer.parseInt(_maksiterasi.getText());
+        limit = Integer.parseInt(_limit.getText());
+        for (int i = 0; i < maksIterasi; i++) {
+            System.out.println("");
+            System.out.println("***************Iterasi Ke" + (i + 1) + "***************");
+            beeColony = ABC(beeColony);
+            System.out.println("");
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -266,9 +262,16 @@ public class Main extends javax.swing.JFrame {
         return initbee;
     }
 
-    public void ABC(int[][] beeColony) {
+    public int[][] ABC(int[][] beeColony) {
         int temp = 0;
         int tmp[] = new int[2];
+        int[][] originalBee = new int[beeColony.length][beeColony[0].length];
+        for (int i = 0; i < originalBee.length; i++) {
+            for (int j = 0; j < originalBee[i].length; j++) {
+                originalBee[i][j] = beeColony[i][j];
+            }
+        }
+
         // SO
         System.out.println("================Tahap SO================");
         for (int i = 0; i < colonySize; i++) {
@@ -348,6 +351,209 @@ public class Main extends javax.swing.JFrame {
         }
         System.out.println("Hasil SS");
         tampilkanBeeDenganTrial(beeColony);
+
+        // RWS
+        System.out.println("");
+        System.out.println("================Tahap RWS================");
+        double[][] rws = new double[beeColony.length][3];
+        int[] choosen = new int[beeColony.length];
+        temp = 0;
+        for (int i = 0; i < beeColony.length; i++) {
+            temp += beeColony[i][10];
+        }
+        for (int i = 0; i < beeColony.length; i++) {
+            rws[i][0] = (double) beeColony[i][10] / temp;
+            if (i == 0) {
+                rws[i][1] = rws[i][0];
+            } else {
+                rws[i][1] = rws[i][0] + rws[i - 1][1];
+            }
+            rws[i][2] = Math.random();
+        }
+
+        for (int i = 0; i < beeColony.length; i++) {
+            boolean stop = false;
+            int j = 0;
+            while (stop == false) {
+                if (rws[i][2] <= rws[j][1]) {
+                    choosen[i] = j;
+                    stop = true;
+                }
+                j++;
+            }
+        }
+        tampilkanHasilRWS(beeColony, rws, choosen);
+        System.out.println("");
+        int[][] rwsResultBee = Arrays.copyOf(beeColony, beeColony.length);
+        for (int i = 0; i < rwsResultBee.length; i++) {
+            int changerIndex = choosen[i];
+            for (int j = 0; j < rwsResultBee[i].length; j++) {
+                rwsResultBee[i][j] = beeColony[changerIndex][j];
+            }
+        }
+
+        tampilkanBeeMakespan(rwsResultBee);
+
+        // IO Onlooker Bee
+        System.out.println("");
+        System.out.println("================Tahap Onlooker Bee================");
+        for (int i = 0; i < colonySize; i++) {
+            ArrayList<Integer> random = new ArrayList<Integer>();
+            for (int r = 1; r <= sizeProblem; r++) {
+                random.add(new Integer(r));
+            }
+            Collections.shuffle(random);
+            for (int j = 0; j < 2; j++) {
+                tmp[j] = ((int) random.get(j)) - 1;
+            }
+            System.out.println("IO " + (tmp[0] + 1) + " " + (tmp[1] + 1));
+            for (int j = 0; j < sizeProblem; j++) {
+                System.out.print(beeColony[i][j] + " ");
+            }
+            System.out.println("");
+            temp = beeColony[i][tmp[0]];
+            if (tmp[0] < tmp[1]) {
+                for (int j = tmp[0]; j < tmp[1]; j++) {
+                    beeColony[i][j] = beeColony[i][j + 1];
+                }
+            } else {
+                for (int j = tmp[0]; j > tmp[1]; j--) {
+                    beeColony[i][j] = beeColony[i][j - 1];
+                }
+
+            }
+            beeColony[i][tmp[1]] = temp;
+            for (int j = 0; j < sizeProblem; j++) {
+                System.out.print(beeColony[i][j] + " ");
+            }
+            beeColony[i][sizeProblem] = hitungMakeSpan(beeColony[i]);
+            beeColony[i][sizeProblem + 1]++;
+            System.out.println("");
+        }
+        System.out.println("Hasil IS");
+        tampilkanBeeDenganTrial(beeColony);
+
+        // IS Onlooker Bee
+        System.out.println("");
+        System.out.println("================Tahap IS================");
+        terbaik = new int[sizeProblem + 2];
+        makespan = 0;
+        for (int i = 0; i < colonySize; i++) {
+            terbaik = Arrays.copyOf(beeColony[i], beeColony[i].length);
+            System.out.print("x" + (i + 1) + "\t= ");
+            for (int k = 0; k < sizeProblem + 2; k++) {
+                System.out.print(terbaik[k] + " ");
+            }
+            System.out.println("");
+            for (int j = 0; j < nse; j++) {
+                ArrayList<Integer> random = new ArrayList<Integer>();
+                for (int r = 1; r <= sizeProblem; r++) {
+                    random.add(new Integer(r));
+                }
+                Collections.shuffle(random);
+                for (int k = 0; k < 2; k++) {
+                    tmp[k] = ((int) random.get(k)) - 1;
+                }
+                System.out.print("SI " + (tmp[0] + 1) + " " + (tmp[1] + 1) + "\t= ");
+                temp = beeColony[i][tmp[0]];
+                if (tmp[0] < tmp[1]) {
+                    for (int k = tmp[0]; k < tmp[1]; k++) {
+                        beeColony[i][k] = beeColony[i][k + 1];
+                    }
+                } else {
+                    for (int k = tmp[0]; k > tmp[1]; k--) {
+                        beeColony[i][k] = beeColony[i][k - 1];
+                    }
+
+                }
+                beeColony[i][tmp[1]] = temp;
+
+                beeColony[i][sizeProblem] = hitungMakeSpan(beeColony[i]);
+
+                if (beeColony[i][sizeProblem] < terbaik[sizeProblem]) {
+                    beeColony[i][sizeProblem + 1] = 0;
+                    terbaik = Arrays.copyOf(beeColony[i], beeColony[i].length);
+                } else {
+                    beeColony[i][sizeProblem + 1]++;
+                }
+                for (int k = 0; k < sizeProblem + 2; k++) {
+                    System.out.print(beeColony[i][k] + " ");
+                }
+                System.out.println("");
+            }
+            terbaik[sizeProblem + 1] = beeColony[i][sizeProblem + 1];
+            System.out.print("Terbaik\t= ");
+            for (int k = 0; k < sizeProblem + 2; k++) {
+                System.out.print(terbaik[k] + " ");
+            }
+            System.out.println("\n");
+            beeColony[i] = Arrays.copyOf(terbaik, terbaik.length);
+        }
+        System.out.println("Hasil IS");
+        tampilkanBeeDenganTrial(beeColony);
+
+        // IS Onlooker Bee
+        System.out.println("");
+        System.out.println("================Terbaik================");
+        tampilkanBeeTerbaik(beeColony);
+
+        // update bee
+        System.out.println("");
+        System.out.println("================Update Bee================");
+        int indexTrialMax = 0;
+        for (int i = 0; i < beeColony.length; i++) {
+            if (beeColony[indexTrialMax][11] < beeColony[i][11]) {
+                indexTrialMax = i;
+            }
+        }
+        if (beeColony[indexTrialMax][11] > limit) {
+            for (int i = 0; i < beeColony.length; i++) {
+                if (beeColony[i][11] < originalBee[i][11]) {
+                    ArrayList<Integer> random = new ArrayList<Integer>();
+                    for (int r = 1; r <= sizeProblem; r++) {
+                        random.add(new Integer(r));
+                    }
+                    Collections.shuffle(random);
+                    for (int j = 0; j < sizeProblem; j++) {
+                        beeColony[i][j] = (int) random.get(j);
+
+                    }
+                    beeColony[i][sizeProblem] = hitungMakeSpan(beeColony[i]);
+                }
+            }
+        }
+        for (int i = 0; i < beeColony.length; i++) {
+            beeColony[i][11] = 0;
+        }
+        System.out.println("= Bee Awal");
+        tampilkanBeeDenganTrial(originalBee);
+        System.out.println("= Bee Update");
+        tampilkanBeeDenganTrial(beeColony);
+
+        return beeColony;
+
+    }
+
+    public void tampilkanBeeTerbaik(int[][] bee) {
+        int terbaik = 0;
+        for (int i = 0; i < bee.length; i++) {
+            if (bee[terbaik][10] > bee[i][10]) {
+                terbaik = i;
+            }
+        }
+        System.out.println("");
+        for (int i = 0; i < bee[terbaik].length; i++) {
+            System.out.print(bee[terbaik][i] + " ");
+        }
+    }
+
+    public void tampilkanHasilRWS(int[][] bee, double[][] rws, int[] choosen) {
+        for (int i = 0; i < bee.length; i++) {
+            for (int j = 0; j < bee[0].length; j++) {
+                System.out.print(bee[i][j] + " ");
+            }
+            System.out.printf("%.2f %.2f %.2f %d\n", rws[i][0], rws[i][1], rws[i][2], choosen[i]);
+        }
     }
 
     public void tampilkanBeeDenganTrial(int[][] bee) {
@@ -428,13 +634,11 @@ public class Main extends javax.swing.JFrame {
     private javax.swing.JTextField _colonysize;
     private javax.swing.JTextField _limit;
     private javax.swing.JTextField _maksiterasi;
-    private javax.swing.JTextField _nse;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
