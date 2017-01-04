@@ -206,6 +206,7 @@ public class Main extends javax.swing.JFrame {
             beeColony = ABC(beeColony);
             System.out.println("");
         }
+        fitness(beeColony);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -241,6 +242,17 @@ public class Main extends javax.swing.JFrame {
                 new Main().setVisible(true);
             }
         });
+    }
+
+    public static void fitness(int[][] bee) {
+        int indexMakespanMin = 0;
+        for (int i = 0; i < bee.length; i++) {
+            if (bee[indexMakespanMin][10] < bee[i][10]) {
+                indexMakespanMin = i;
+            }
+        }
+        double fitness = (double) 1 / bee[indexMakespanMin][10];
+        System.out.printf("fitness = %.7f", fitness);
     }
 
     public int[][] iBeeColony() {
